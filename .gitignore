@@ -19,4 +19,4 @@ readme_local.txt
 venv/
 .idea/
 __pycache__/
-#.DS_Store
+.DS_Store
