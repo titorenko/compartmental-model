@@ -17,5 +17,6 @@ Visualisation/model_outcomes/baseline.csv
 Visualisation/model_outcomes/baseline.csv
 readme_local.txt
 venv/
-#.idea/
+.idea/
 __pycache__/
+#.DS_Store
