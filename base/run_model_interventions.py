@@ -1,5 +1,5 @@
-from initialise_parameters import preparePopulationFrame
-from run_model import run_simulation
+from base.initialise_parameters import preparePopulationFrame
+from base.run_model import run_simulation
 
 
 #Baseline dict for modifications later

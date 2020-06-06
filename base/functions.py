@@ -1,4 +1,4 @@
-from initialise_parameters import params, control_data, categories, calculated_categories, change_in_categories
+from base.initialise_parameters import params, control_data, categories, calculated_categories, change_in_categories
 from math import exp, ceil, log, floor, sqrt
 import numpy as np
 from scipy.integrate import ode
@@ -274,10 +274,8 @@ def GeneratePercentiles(sols):
 def GenerateInfectionMatrix(population_frame,camp,control_dict):
     infection_matrix = np.asarray(pd.read_csv(os.path.join(os.path.dirname(cwd),'Parameters/Contact_matrix_' + camp + '.csv'))) #np.ones((population_frame.shape[0],population_frame.shape[0]))
     infection_matrix = infection_matrix[:,1:]
-
     next_generation_matrix = np.matmul(0.01*np.diag(population_frame.Population_structure) , infection_matrix )
     largest_eigenvalue = max(np.linalg.eig(next_generation_matrix)[0]) # max eigenvalue
-    
 
 
     beta_list = np.linspace(params.beta_list[0],params.beta_list[2],20)

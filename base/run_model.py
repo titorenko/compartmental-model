@@ -1,10 +1,10 @@
 import pandas as pd
 from math import floor, ceil, exp
-from initialise_parameters import params, parameter_csv, categories
+from base.initialise_parameters import params, parameter_csv, categories
 import numpy as np
 import plotly.graph_objects as go
-from functions import simulator, simulate_range_of_R0s, SimulateOverRangeOfParameters, object_dump, generate_csv
-from plotter import figure_generator, age_structure_plot, stacked_bar_plot, uncertainty_plot
+from base.functions import simulator, simulate_range_of_R0s, SimulateOverRangeOfParameters, object_dump, generate_csv
+from base.plotter import figure_generator, age_structure_plot, stacked_bar_plot, uncertainty_plot
 import pickle
 import os
 
@@ -20,10 +20,10 @@ from configs.remove_symptomatic import camp, population_frame, population, contr
 # remove high risk people form the camp (here we vary the parameters in the config file to explore the number of people removed and to which period of time removing people is still effective)
 # from configs.remove_highrisk import camp, population_frame, population, control_dict
 # custom experiment
-from configs.custom import camp, population_frame, population, control_dict
+from base.configs.custom import camp, population_frame, population, control_dict
 
 def run_simulation(camp,population_frame,population,control_dict,mode='experiment'):
-    # cd into Scripts
+    # cd into base
     cwd = os.getcwd()
 
     ##----------------------------------------------------------------
@@ -36,8 +36,8 @@ def run_simulation(camp,population_frame,population,control_dict,mode='experimen
     save_csv = True
     
     # plot output?
-    plot_output = False
-    save_plots  = False # needs plot_output to be True
+    plot_output = True
+    save_plots  = True # needs plot_output to be True
     
     # simulation runtime
     t_sim = 200
@@ -144,4 +144,4 @@ def run_simulation(camp,population_frame,population,control_dict,mode='experimen
     return None
 
 if __name__=='__main__':
-    _=run_simulation(camp,population_frame,population,control_dict)
+    run_simulation(camp,population_frame,population,control_dict)

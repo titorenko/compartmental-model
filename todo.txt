@@ -1,0 +1,23 @@
+1) camp_params.csv remove computed parameters from csv to code
+2) move R code that generates params to python
+3) setup mongo + impl parameter store and model result store
+4) model parallel exec
+5) command line api
+
+B1) move camp params generator to python (now in notebook)
+B2) parameter generator to populate into Mongo
+
+*) cleanup cm.initialise_parameters.py
+
+Questions:
+1) what is timing in params
+
+
+Completed/in progress:
+abstract params
+abstract models a bit
+cleanup data input / profile
+parallel model exec with dask
+azure integration
+console runner
+webapp

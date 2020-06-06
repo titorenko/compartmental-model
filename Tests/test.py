@@ -7,7 +7,7 @@
 
 # Bring your packages onto the path
 import sys, os
-sys.path.append(os.path.abspath(os.path.join('..', 'Scripts')))
+sys.path.append(os.path.abspath(os.path.join('..', 'base')))
 
 # Now do your import
 from run_model import *

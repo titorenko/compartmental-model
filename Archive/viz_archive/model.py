@@ -8,7 +8,7 @@ def simulate_R0_unmitigated(R_0,column,t_stop=200): # gives solution for middle 
     from plots import plot_by_age
     import sys, os
     cwd = os.getcwd()
-    sys.path.append(os.path.abspath(os.path.join('..', 'Scripts')))
+    sys.path.append(os.path.abspath(os.path.join('..', 'base')))
     from functions import simulator
     from configs.baseline import camp, population_frame, population, control_dict
     from initialise_parameters import params,categories
