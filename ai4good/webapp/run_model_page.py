@@ -62,7 +62,8 @@ def profile_selector():
 def model_run_buttons():
     return html.Div([
         dbc.Button("Run Model", id="run_model_button", color="primary", className="mr-1", disabled=True),
-        dbc.Button("See Results", id="model_results_button", color="success", className="mr-1", disabled=True),
+        dbc.Button("See Results", id="model_results_button", color="success", className="mr-1",
+                   target="_blank", disabled=True),
         dbc.Toast(
             [html.P("Model execution succeeded", className="mb-0")],
             id="run_model_toast",
