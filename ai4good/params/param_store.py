@@ -84,8 +84,8 @@ class SimpleParamStore(ParamStore):
                     'timing': [0, 0]
                 },
                 't_sim': 200,  # simulation runtime,
-                'numberOfIterations': 1000,  # suggest 800-1000 for real thing
-                'nProcesses': 4 # parallelization
+                'numberOfIterations': 1,  # suggest 800-1000 for real thing
+                'nProcesses': 1 # parallelization
             },
             'better_hygiene': {
                 'better_hygiene': {
@@ -131,8 +131,8 @@ class SimpleParamStore(ParamStore):
                     'timing': [0, 12]
                 },
                 't_sim': 200,
-                'numberOfIterations': 1000,
-                'nProcesses': 4
+                'numberOfIterations': 1,
+                'nProcesses': 1
             },
             'remove_highrisk': {
                 'better_hygiene': {
