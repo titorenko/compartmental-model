@@ -2,8 +2,8 @@ from typeguard import typechecked
 from typing import List, Dict, Any
 from abc import ABC, abstractmethod
 import pandas as pd
-import os
 import copy
+import ai4good.utils.path_utils as pu
 
 
 @typechecked
@@ -238,5 +238,4 @@ class SimpleParamStore(ParamStore):
 
     @staticmethod
     def _read_csv(name: str) -> pd.DataFrame:
-        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        return pd.read_csv(os.path.join(__location__, name))
+        return pd.read_csv(pu.params_path(name))

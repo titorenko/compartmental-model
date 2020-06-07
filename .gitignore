@@ -20,3 +20,6 @@ venv/
 .idea/
 __pycache__/
 .DS_Store
+fs/figs
+fs/model_results
+fs/reports

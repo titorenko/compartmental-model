@@ -3,6 +3,7 @@ from typing import Any
 from abc import ABC, abstractmethod
 import os
 import pickle
+import ai4good.utils.path_utils as pu
 
 
 @typechecked
@@ -23,8 +24,6 @@ class ModelResultStore(ABC):
 @typechecked
 class SimpleModelResultStore(ModelResultStore):
 
-    local_path_suffix = '../../result_store'
-
     def store(self, model_id: str, result_id: str, obj: Any):
         p = self._path(f"{model_id}_{result_id}.pkl")
         with open(p, 'wb') as handle:
@@ -39,9 +38,6 @@ class SimpleModelResultStore(ModelResultStore):
         p = self._path(f"{model_id}_{result_id}.pkl")
         return os.path.exists(p)
 
-    def _path(self, name: str) -> str:
-        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        base_dir = os.path.join(__location__, self.local_path_suffix)
-        if not os.path.exists(base_dir):
-            os.makedirs(base_dir, exist_ok=True)
-        return os.path.join(base_dir, name)
+    @staticmethod
+    def _path(name: str) -> str:
+        return pu.model_results_path(name)
