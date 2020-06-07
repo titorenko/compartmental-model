@@ -1,13 +1,12 @@
-harmonize output locations
 add to webapp
-
-
 
 1) camp_params.csv remove computed parameters from csv to code
 2) move R code that generates params to python
 3) setup mongo + impl parameter store and model result store
-4) model parallel exec
-5) command line api
+6) add async and progress webapp run
+7) better info page in model run in webapp
+8) add more complex charts to webapp
+
 TODO: add save csv specific to model
 #TODO: make specific to model
 

@@ -19,6 +19,8 @@ readme_local.txt
 venv/
 .idea/
 __pycache__/
+*.pyc
+*.pyo
 .DS_Store
 fs/figs
 fs/model_results
