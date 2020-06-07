@@ -3,6 +3,7 @@ from typing import List, Dict, Any
 from abc import ABC, abstractmethod
 import pandas as pd
 import os
+import copy
 
 
 @typechecked
@@ -81,7 +82,10 @@ class SimpleParamStore(ParamStore):
                     'rate': 20,  # people per day
                     'n_categories_removed': 2,  # remove oldest n categories
                     'timing': [0, 0]
-                }
+                },
+                't_sim': 200,  # simulation runtime,
+                'numberOfIterations': 1000,  # suggest 800-1000 for real thing
+                'nProcesses': 4 # parallelization
             },
             'better_hygiene': {
                 'better_hygiene': {
@@ -101,7 +105,10 @@ class SimpleParamStore(ParamStore):
                     'rate': 20,
                     'n_categories_removed': 2,
                     'timing': [0, 0]
-                }
+                },
+                't_sim': 200,
+                'numberOfIterations': 1000,
+                'nProcesses': 4
             },
             'custom': {
                 'better_hygiene': {
@@ -122,7 +129,10 @@ class SimpleParamStore(ParamStore):
                     'rate': 50,
                     'n_categories_removed': 2,
                     'timing': [0, 12]
-                }
+                },
+                't_sim': 200,
+                'numberOfIterations': 1000,
+                'nProcesses': 4
             },
             'remove_highrisk': {
                 'better_hygiene': {
@@ -142,7 +152,10 @@ class SimpleParamStore(ParamStore):
                     'rate': 100,
                     'n_categories_removed': 2,
                     'timing': [0, 6]
-                }
+                },
+                't_sim': 200,
+                'numberOfIterations': 1000,
+                'nProcesses': 4
             },
             'remove_symptomatic': {
                 'better_hygiene': {
@@ -162,7 +175,10 @@ class SimpleParamStore(ParamStore):
                     'rate': 20,
                     'n_categories_removed': 2,
                     'timing': [0, 0]
-                }
+                },
+                't_sim': 200,
+                'numberOfIterations': 1000,
+                'nProcesses': 4
             },
             'shielding': {
                 'better_hygiene': {
@@ -182,7 +198,10 @@ class SimpleParamStore(ParamStore):
                     'rate': 20,
                     'n_categories_removed': 2,
                     'timing': [0, 0]
-                }
+                },
+                't_sim': 200,
+                'numberOfIterations': 1000,
+                'nProcesses': 4
             }
         }
     }
@@ -197,7 +216,7 @@ class SimpleParamStore(ParamStore):
         return list(self.profiles[model].keys())
 
     def get_params(self, model: str, profile: str) -> Dict[str, Any]:
-        return self.profiles[model][profile]
+        return copy.deepcopy(self.profiles[model][profile])
 
     def get_camps(self) -> List[str]:
         df = self._read_csv("camp_params.csv")

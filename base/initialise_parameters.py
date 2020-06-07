@@ -42,7 +42,6 @@ model_params = parameter_csv[parameter_csv['Type']=='Model Parameter']
 model_params = model_params.loc[:,['Name','Value']]
 control_data = parameter_csv[parameter_csv['Type']=='Control']
 
-# print()
 
 R_0_list                         =   np.asarray(model_params[model_params['Name']=='R0'].Value)
 

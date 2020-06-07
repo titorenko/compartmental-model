@@ -210,9 +210,8 @@ class Parameters:
         self.profile = profile
         self.control_dict = self.load_control_dict()
 
-        self.infection_matrix, self.beta_list, self.largest_eigenvalue = self.generate_infection_matrix()
+        self.infection_matrix, self.im_beta_list, self.largest_eigenvalue = self.generate_infection_matrix()
         self.generated_disease_vectors = self.ps.get_generated_disease_param_vectors()
-
 
     def load_control_dict(self):
         cd = self.ps.get_params('compartmental-model', self.profile)
@@ -221,10 +220,11 @@ class Parameters:
                 if 'value' not in d:
                     d['value'] = self.better_hygiene
             else:
-                # scale values by population size
-                for sk in d.keys():
-                    if sk in {'value', 'rate'}:
-                        d[sk] = d[sk] / self.population
+                if isinstance(d, dict):
+                    # scale values by population size
+                    for sk in d.keys():
+                        if sk in {'value', 'rate'}:
+                            d[sk] = d[sk] / self.population
         return cd
 
     @staticmethod

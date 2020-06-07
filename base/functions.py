@@ -142,8 +142,6 @@ class simulator:
             # Q
             dydt[params.Q_ind + i*params.number_compartments] = quarantine_sick - params.quarant_rate * y[params.Q_ind + i*params.number_compartments]
 
-
-
         return dydt
     ##
     #--------------------------------------------------------------------
@@ -178,8 +176,6 @@ class simulator:
 
         population_vector = np.asarray(population_frame.Population_structure)
 
-        
-        
         # initial conditions
         for i in range(age_categories):
             y0[params.S_ind + i*params.number_compartments] = (population_vector[i]/100)*S0
@@ -200,7 +196,6 @@ class simulator:
         symptomatic_prob = np.asarray(population_frame.p_symptomatic)
         hospital_prob = np.asarray(population_frame.p_hospitalised)
         critical_prob = np.asarray(population_frame.p_critical)
-
 
         sol = ode(self.ode_system).set_f_params(infection_matrix,age_categories,symptomatic_prob,hospital_prob,critical_prob,beta, # params
                 latentRate,removalRate,hospRate,deathRateICU,deathRateNoIcu, # more params
@@ -223,10 +218,6 @@ class simulator:
                 else:
                     raise RuntimeError('ode solver unsuccessful')
 
-
-
-
-        
         y_plot = np.zeros((len(categories.keys()), len(tim) ))
         for name in calculated_categories:
 
@@ -360,13 +351,7 @@ def SimulateOverRangeOfParameters(population_frame, population, control_dict, ca
     # standard run
     StandardSol = []
     StandardSol.append(simulator().run_model(T_stop=t_stop,infection_matrix=infection_matrix,population=population,population_frame=population_frame,beta=params.beta_list[1],control_dict=control_dict))
-    
     return sols_raw, StandardSol, [y_U95, y_UQ, y_LQ, y_L95, y_median], configDict
-
-
-
-
-
 
 
 def object_dump(file_name,object_to_dump):
@@ -381,14 +366,11 @@ def object_dump(file_name,object_to_dump):
     return None
 
 
-
 def generate_csv(data_to_save,population_frame,filename,input_type=None,time_vec=None):
     
     category_map = {}
     for key in categories.keys():
         category_map[str(categories[key]['index'])] = key
-
-    print(category_map)
 
     if input_type=='percentile':
         csv_sol = np.transpose(data_to_save)

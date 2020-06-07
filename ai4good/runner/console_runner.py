@@ -6,14 +6,16 @@ from ai4good.models.model import Model, ModelResult
 from ai4good.models.model_registry import get_models
 from ai4good.models.cm.cm_model import CompartmentalModel
 from ai4good.runner.facade import Facade
-from ai4good.models.cm.plotter import figure_generator
+from ai4good.models.cm.functions import generate_csv
+from ai4good.models.cm.plotter import figure_generator, age_structure_plot, stacked_bar_plot, uncertainty_plot
 import os
 
 facade = Facade.simple()
 
 
 @typechecked
-def run_model(_model: str, _profile: str, camp: str, load_from_cache: bool, save_to_cache: bool, save_plots: bool):
+def run_model(_model: str, _profile: str, camp: str, load_from_cache: bool, save_to_cache: bool,
+              is_save_plots: bool, is_show_plots: bool, is_save_report: bool):
     logging.info('Running %s model with %s profile', _model, _profile)
     _mdl: Model = get_models()[_model](facade.ps)
     res_id = _mdl.result_id(camp, _profile)
@@ -26,30 +28,61 @@ def run_model(_model: str, _profile: str, camp: str, load_from_cache: bool, save
         if save_to_cache:
             logging.info("Saving model result to cache")
             facade.rs.store(_mdl.id(), res_id, mr)
-    if save_plots:
-        save_plots(mr, res_id)
+    if is_save_plots or is_show_plots:
+        save_plots(mr, res_id, is_save_plots, is_show_plots)
+    if is_save_report:
+        save_report(mr, res_id)
 
-def save_plots(mr, res_id):  #TODO: make specific to model
+
+def save_plots(mr, res_id, is_save_plots, is_show_plots):
+
+    def fig_path(name):
+        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        base_dir = os.path.join(__location__, '../../figs')
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir, exist_ok=True)
+        return os.path.join(base_dir, f"{name}.png")
+
     multiple_categories_to_plot = ['E', 'A', 'I', 'R', 'H', 'C', 'D', 'O', 'Q', 'U']  # categories to plot
-    single_category_to_plot = 'C'  # categories to plot in final 3 plots
+    single_category_to_plot = 'C'  # categories to plot in final 3 plots #TODO: make selectable
 
     # plot graphs
-    fig_multi_lines = go.Figure(figure_generator(mr, multiple_categories_to_plot))  # plot with lots of lines
-    # fig_age_structure = go.Figure(
-    #     age_structure_plot(StandardSol, single_category_to_plot, population, population_frame))  # age structure
-    # fig_bar_chart = go.Figure(stacked_bar_plot(StandardSol, single_category_to_plot, population,
-    #                                            population_frame))  # bar chart (age structure)
-    # fig_uncertainty = go.Figure(uncertainty_plot(StandardSol, single_category_to_plot, population, population_frame,
-    #                                              percentiles))  # uncertainty
+    sol = mr.get('standard_sol')
+    percentiles = mr.get('percentiles')
+    p = mr.get('params')
+    fig_multi_lines = go.Figure(figure_generator(sol, p, multiple_categories_to_plot))  # plot with lots of lines
+    fig_age_structure = go.Figure(age_structure_plot(sol, p, single_category_to_plot))
+    fig_bar_chart = go.Figure(stacked_bar_plot(sol, p, single_category_to_plot))  # bar chart (age structure)
+    fig_uncertainty = go.Figure(uncertainty_plot(sol, p, single_category_to_plot, percentiles))  # uncertainty
 
-    #plotString = "_%s_%s" % (categories[single_category_to_plot]['longname'], param_string)
-    fig_multi_lines.write_image(os.path.join(os.path.dirname(os.getcwd()), "Figs/Disease_progress_%s.png" % res_id))
-    # fig_age_structure.write_image(os.path.join(os.path.dirname(cwd), "Figs/Age_structure" + plotString + ".png"))
-    # fig_bar_chart.write_image(
-    #     os.path.join(os.path.dirname(cwd), "Figs/Age_structure_(bar_chart)" + plotString + ".png"))
-    # fig_uncertainty.write_image(os.path.join(os.path.dirname(cwd), "Figs/Uncertainty" + plotString + ".png"))
+    if is_show_plots:
+        fig_multi_lines.show()
+        fig_age_structure.show()
+        fig_bar_chart.show()
+        fig_uncertainty.show()
 
-#TODO: add save csv
+    if is_save_plots:
+        fig_multi_lines.write_image(fig_path(f"Disease_progress_{res_id}"))
+        fig_age_structure.write_image(fig_path(f"Age_structure_{res_id}"))
+        fig_bar_chart.write_image(fig_path(f"Age_structure_(bar_chart)_{res_id}"))
+        fig_uncertainty.write_image(fig_path(f"Uncertainty_{res_id}"))
+
+
+def save_report(mr, res_id):
+    def report_path(name):
+        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        base_dir = os.path.join(__location__, '../../reports')
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir, exist_ok=True)
+        return os.path.join(base_dir, f"{name}")
+
+    logging.info("Saving report")
+    sols_raw = mr.get('sols_raw')
+    p = mr.get('params')
+    df = generate_csv(sols_raw, p,  input_type='raw')
+    df.to_csv(report_path(f"all_R0_{res_id}.csv"))
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     parser = argparse.ArgumentParser(description='AI4Good model runner')
@@ -62,6 +95,8 @@ if __name__ == '__main__':
     parser.add_argument('--do_not_save_to_model_result_cache', dest='save_to_cache', action='store_false',
                         help='Do save results to cache', default=True)
     parser.add_argument('--save_plots', dest='save_plots', action='store_true', help='Save plots', default=False)
+    parser.add_argument('--show_plots', dest='show_plots', action='store_true', help='Show plots', default=False)
+    parser.add_argument('--save_report', dest='save_report', action='store_true', help='Save model report', default=False)
     args = parser.parse_args()
 
     model = args.model
@@ -70,6 +105,7 @@ if __name__ == '__main__':
         profile = facade.ps.get_profiles(model)[0]
     else:
         profile = args.profile
-    run_model(model, profile, args.camp, args.load_from_cache, args.save_to_cache, args.save_plots)
+    run_model(model, profile, args.camp, args.load_from_cache, args.save_to_cache, args.save_plots,
+              args.show_plots, args.save_report)
 
     logging.info('Model Runner finished normally')

@@ -31,7 +31,6 @@ class Model(ABC):
         """Result id to enable caching"""
         pass
 
-
     @abstractmethod
     def run(self, camp: str, profile: str) -> ModelResult:
         pass

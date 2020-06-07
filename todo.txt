@@ -1,8 +1,15 @@
+harmonize output locations
+add to webapp
+
+
+
 1) camp_params.csv remove computed parameters from csv to code
 2) move R code that generates params to python
 3) setup mongo + impl parameter store and model result store
 4) model parallel exec
 5) command line api
+TODO: add save csv specific to model
+#TODO: make specific to model
 
 B1) move camp params generator to python (now in notebook)
 B2) parameter generator to populate into Mongo
@@ -10,6 +17,7 @@ B2) parameter generator to populate into Mongo
 *) cleanup cm.initialise_parameters.py
 
 Questions:
+0) what data they interested. why std sol only plotted not whole range
 1) what is timing in params
 
 
@@ -20,4 +28,4 @@ cleanup data input / profile
 parallel model exec with dask
 azure integration
 console runner
-webapp
+webapp *

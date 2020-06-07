@@ -16,15 +16,12 @@ def population_format(num,dp=0):
         return '%.1f%s' % (num, ['', 'K', 'M', 'B'][magnitude])
 
 
-
 # fill_cols = ['rgba(50,50,50,0.2)','rgba(50,50,50,0.2)','rgba(50,50,50,0.2)','rgba(50,0,0,0.4)']
 ########################################################################################################################
-def figure_generator(mr: ModelResult, cats_to_plot):
-    sols = mr.get('standard_sol')
-    params = mr.get('params')
+def figure_generator(sols, params, cats_to_plot):
     population_plot = params.population
     categories = params.categories
-    # population_plot = params.population
+
     if len(cats_to_plot)==0:
         cats_to_plot=['I']
 
@@ -208,7 +205,10 @@ def figure_generator(mr: ModelResult, cats_to_plot):
 
 
 ################################################################################################################################################################
-def uncertainty_plot(sols,cats_to_plot,population_plot,categories,confidence_range=None):
+def uncertainty_plot(sols, params, cats_to_plot, confidence_range=None):
+
+    population_plot = params.population
+    categories = params.categories
 
     if len(cats_to_plot)==0:
         cats_to_plot=['I']
@@ -431,29 +431,12 @@ def uncertainty_plot(sols,cats_to_plot,population_plot,categories,confidence_ran
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ########################################################################################################################
-def age_structure_plot(sols,cats_to_plot,population_plot,population_frame, categories,params): # ,confidence_range=None
+def age_structure_plot(sols, params, cats_to_plot): # ,confidence_range=None
 
-    # population_plot = params.population
+    population_plot = params.population
+    categories = params.categories
+    population_frame = params.population_frame
 
     font_size = 13
 
@@ -638,11 +621,13 @@ def age_structure_plot(sols,cats_to_plot,population_plot,population_frame, categ
     return {'data': lines_to_plot, 'layout': layout}
 
 
-
 ########################################################################################################################
-def stacked_bar_plot(sols,cats_to_plot,population_plot,population_frame,categories, params):
+def stacked_bar_plot(sols, params, cats_to_plot):
 
-    # population_plot = params.population
+    population_plot = params.population
+    categories = params.categories
+    population_frame = params.population_frame
+
     font_size = 13
     lines_to_plot = []
 

@@ -5,9 +5,6 @@ from ai4good.models.cm.initialise_parameters import Parameters
 from ai4good.models.cm.functions import Simulator
 from math import ceil
 
-t_sim = 200  # simulation runtime
-numberOfIterations = 1000  # suggest 800-1000 for real thing
-
 
 @typechecked
 class CompartmentalModel(Model):
@@ -34,14 +31,16 @@ class CompartmentalModel(Model):
             ceil(p.population * p.control_dict['remove_high_risk']['rate']),
             p.control_dict['remove_high_risk']['timing'],
             ceil(p.population * p.control_dict['ICU_capacity']['value']),
-            numberOfIterations
+            p.control_dict['numberOfIterations']
         )
 
     def run(self, camp: str, profile: str) -> ModelResult:
         p = Parameters(self.ps, camp, profile)
         sim = Simulator(p)
+        # sols_raw, standard_sol, percentiles, config_dict = sim.simulate_over_parameter_range(
+        #     p.control_dict['numberOfIterations'], p.control_dict['t_sim'])
         sols_raw, standard_sol, percentiles, config_dict = sim.simulate_over_parameter_range_parallel(
-            numberOfIterations, t_sim)
+            p.control_dict['numberOfIterations'], p.control_dict['t_sim'], p.control_dict['nProcesses'])
 
         return ModelResult(self._result_id(p), {
             'sols_raw': sols_raw,

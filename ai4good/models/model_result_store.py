@@ -1,7 +1,6 @@
 from typeguard import typechecked
-from typing import List, Dict, Any
+from typing import Any
 from abc import ABC, abstractmethod
-import pandas as pd
 import os
 import pickle
 
@@ -33,14 +32,14 @@ class SimpleModelResultStore(ModelResultStore):
 
     def load(self, model_id: str, result_id: str) -> Any:
         p = self._path(f"{model_id}_{result_id}.pkl")
-        with open(p, 'r') as handle:
-            pickle.load(handle)
+        with open(p, 'rb') as handle:
+            return pickle.load(handle)
 
     def exists(self, model_id: str, result_id: str) -> bool:
         p = self._path(f"{model_id}_{result_id}.pkl")
         return os.path.exists(p)
 
-    def _path(self, name: str) -> pd.DataFrame:
+    def _path(self, name: str) -> str:
         __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         base_dir = os.path.join(__location__, self.local_path_suffix)
         if not os.path.exists(base_dir):

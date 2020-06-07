@@ -28,7 +28,7 @@ def run_simulation(camp,population_frame,population,control_dict,mode='experimen
 
     ##----------------------------------------------------------------
     # load a saved solution?
-    load = True
+    load = False
 
     # save generated solution?
     # saves as a python pickle object
@@ -142,6 +142,7 @@ def run_simulation(camp,population_frame,population,control_dict,mode='experimen
             fig_uncertainty.write_image(   os.path.join(os.path.dirname(cwd), "Figs/Uncertainty" + plotString + ".png" ))
 
     return None
+
 
 if __name__=='__main__':
     run_simulation(camp,population_frame,population,control_dict)
