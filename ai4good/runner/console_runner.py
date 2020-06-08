@@ -73,7 +73,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='AI4Good model runner')
     parser.add_argument('--model', type=str, choices=get_models().keys(), help='Model to run',
                         default=CompartmentalModel.ID)
-    parser.add_argument('--profile', type=str, help='Model profile to run, by default first one will be run')
+    profile_group = parser.add_mutually_exclusive_group()
+    profile_group.add_argument('--profile', type=str, help='Model profile to run, by default first one will be run')
+    profile_group.add_argument('--run_all_profiles', action='store_true', help='Run all profiles in the model', default=False)
     parser.add_argument('--camp', type=str, help='Camp to run model for', default='Moria')
     parser.add_argument('--do_not_load_from_model_result_cache', dest='load_from_cache', action='store_false',
                         help='Do not load from cache, re-compute everything', default=True)
@@ -86,11 +88,16 @@ if __name__ == '__main__':
 
     model = args.model
     assert model in facade.ps.get_models()
-    if args.profile is None:
-        profile = facade.ps.get_profiles(model)[0]
+    if args.run_all_profiles:
+        for profile in facade.ps.get_profiles(model):
+            run_model(model, profile, args.camp, args.load_from_cache, args.save_to_cache, args.save_plots,
+                      args.show_plots, args.save_report)
     else:
-        profile = args.profile
-    run_model(model, profile, args.camp, args.load_from_cache, args.save_to_cache, args.save_plots,
-              args.show_plots, args.save_report)
+        if args.profile is None:
+            profile = facade.ps.get_profiles(model)[0]
+        else:
+            profile = args.profile
+        run_model(model, profile, args.camp, args.load_from_cache, args.save_to_cache, args.save_plots,
+                  args.show_plots, args.save_report)
 
     logging.info('Model Runner finished normally')
